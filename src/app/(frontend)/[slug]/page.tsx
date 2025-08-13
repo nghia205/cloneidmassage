@@ -13,6 +13,7 @@ import { generateMeta } from '@/utilities/generateMeta'
 import PageClient from './page.client'
 import { LivePreviewListener } from '@/components/LivePreviewListener'
 import { ContentHome } from '../content/home/content.home'
+import { Blog } from '../bloghome/blog'
 
 export async function generateStaticParams() {
   const payload = await getPayload({ config: configPromise })
@@ -57,7 +58,7 @@ export default async function Page({ params: paramsPromise }: Args) {
 
   // Remove this code once your website is seeded
   if (!page && slug === 'home') {
-    return <ContentHome />
+    return <Blog />
     page = homeStatic
   }
 
