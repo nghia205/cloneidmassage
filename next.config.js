@@ -22,6 +22,12 @@ const nextConfig = {
         port: '', // có thể bỏ nếu không dùng port
         pathname: '**', // ** nghĩa là cho phép tất cả đường dẫn ảnh
       },
+      {
+        protocol: 'http',
+        hostname: 'localhost',
+        port: '3000',
+        pathname: '/api/media/file/**',
+      },
     ],
   },
   webpack: (webpackConfig) => {

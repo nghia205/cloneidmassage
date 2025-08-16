@@ -1,6 +1,7 @@
 import type { CheckboxField, TextField } from 'payload'
 
 import { formatSlugHook } from './formatSlug'
+import slugify from 'slugify'
 
 type Overrides = {
   slugOverrides?: Partial<TextField>
@@ -32,7 +33,27 @@ export const slugField: Slug = (fieldToUse = 'title', overrides = {}) => {
     ...(slugOverrides || {}),
     hooks: {
       // Kept this in for hook or API based updates
-      beforeValidate: [formatSlugHook(fieldToUse)],
+      beforeValidate: [
+        ({ data }) => {
+          if (data?.title) {
+            let text = data.title
+              // Bỏ emoji và ký tự đặc biệt (ngoài chữ và số, dấu cách, -)
+              .replace(/[^\p{L}\p{N}\s-]/gu, '')
+              // Bỏ dấu tiếng Việt
+              .normalize('NFD')
+              .replace(/[\u0300-\u036f]/g, '')
+              // Chuyển đ và Đ thành d
+              .replace(/đ/g, 'd')
+              .replace(/Đ/g, 'd')
+
+            // Dùng slugify để chuẩn hóa dấu gạch ngang
+            return slugify(text, {
+              lower: true,
+              strict: true,
+            })
+          }
+        },
+      ],
     },
     admin: {
       position: 'sidebar',

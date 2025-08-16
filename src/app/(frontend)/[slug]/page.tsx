@@ -1,26 +1,23 @@
 import type { Metadata } from 'next'
-
 import { PayloadRedirects } from '@/components/PayloadRedirects'
 import configPromise from '@payload-config'
 import { getPayload, type RequiredDataFromCollectionSlug } from 'payload'
 import { draftMode } from 'next/headers'
 import React, { cache } from 'react'
-import { homeStatic } from '@/endpoints/seed/home-static'
-
-import { RenderBlocks } from '@/blocks/RenderBlocks'
-import { RenderHero } from '@/heros/RenderHero'
 import { generateMeta } from '@/utilities/generateMeta'
-import PageClient from './page.client'
-import { LivePreviewListener } from '@/components/LivePreviewListener'
-import { ContentHome } from '../content/home/content.home'
 import { Blog } from '../bloghome/blog'
+import Image from 'next/image'
+import Link from 'next/link'
+import { CiSearch } from 'react-icons/ci'
+import { convertLexicalToHTML } from '@payloadcms/richtext-lexical/html'
+import { MdKeyboardArrowRight } from 'react-icons/md'
 
 export async function generateStaticParams() {
   const payload = await getPayload({ config: configPromise })
   const pages = await payload.find({
-    collection: 'pages',
+    collection: 'posts',
     draft: false,
-    limit: 1000,
+    limit: 10,
     overrideAccess: false,
     pagination: false,
     select: {
@@ -46,38 +43,154 @@ type Args = {
 }
 
 export default async function Page({ params: paramsPromise }: Args) {
-  const { isEnabled: draft } = await draftMode()
   const { slug = 'home' } = await paramsPromise
   const url = '/' + slug
 
-  let page: RequiredDataFromCollectionSlug<'pages'> | null
+  let page: RequiredDataFromCollectionSlug<'posts'> | null
 
   page = await queryPageBySlug({
     slug,
   })
 
-  // Remove this code once your website is seeded
+  const payload = await getPayload({ config: configPromise })
+  const pages = await payload.find({
+    collection: 'posts',
+    draft: false,
+    limit: 10,
+    overrideAccess: false,
+    pagination: false,
+  })
+
   if (!page && slug === 'home') {
     return <Blog />
-    page = homeStatic
   }
 
   if (!page) {
     return <PayloadRedirects url={url} />
   }
 
-  const { hero, layout } = page
+  const data = page.content
+  const html = convertLexicalToHTML({ data })
+
+  const date = new Date(page.createdAt || '')
+
+  const day = date.getUTCDate()
+
+  const month = date.getUTCMonth() + 1
+  const years = date.getUTCFullYear()
 
   return (
-    <article className="pt-16 pb-24">
-      <PageClient />
-      {/* Allows redirects for valid pages too */}
-      <PayloadRedirects disableNotFound url={url} />
+    <article className=" pb-10">
+      <div className="container ">
+        <div className="flex gap-x-2 items-center">
+          <span className="text-2xl font-bold">Blog</span>
+          <MdKeyboardArrowRight className="text-xl opacity-25" />
+          <span className="text-wrap font-medium text-gray-900">{page.title}</span>
+        </div>
+        <div className="flex py-5">
+          <div className="flex flex-col justify-center items-center w-3/4 pr-8 border-r-[1px] border-opacity-5 gap-y-2">
+            <div className="text-center text-2xl font-semibold">{page.title}</div>
+            <p className="mx-auto my-3 h-[3px] w-8 bg-[#ebebeb]"></p>
+            <span className="mx-auto text-sm text-gray-500 flex gap-x-2">
+              {day}/{month}/{years}
+              <span>-</span>
+              {page?.populatedAuthors?.map((item, index) => {
+                if (index > 0) {
+                  return <span key={index}>,{item.name}</span>
+                }
+                return <span key={index}>{item.name}</span>
+              })}
+            </span>
+            {typeof page.heroImage === 'object' && page.heroImage?.url && (
+              <div className="relative w-full group ">
+                <Image
+                  src={`${process.env.NEXT_PUBLIC_SERVER_URL}${page.heroImage.url}`}
+                  width={1000}
+                  height={500}
+                  className="w-full cursor-pointer"
+                  alt=""
+                />
+                <div className="absolute top-5 -left-5 bg-white border-2 text-[#C39972] border-[#C39972] group-hover:bg-[#C39972] transition-all duration-75 ease-linear group-hover:text-white h-11 w-11 flex flex-col justify-center items-center leading-none">
+                  <span className="text-[17px] mb-1">{day}</span>
+                  <span className="text-[13px]">Th{month}</span>
+                </div>
+              </div>
+            )}
+            <h1>{page.title}</h1>
+            <div className="my-2 h-[2px] w-8 bg-[#ebebeb]"></div>
+            <div dangerouslySetInnerHTML={{ __html: html }} className="text-sm" />
+            <div className="flex items-center gap-x-2 w-full justify-start mt-20 ">
+              <Image
+                src="/avatar-default.webp"
+                width={70}
+                height={70}
+                alt=""
+                className="h-[70px] w-[70px] rounded-full object-cover md:mt-2"
+              />
+              {page?.populatedAuthors?.map((item, index) => {
+                if (index > 0) {
+                  return (
+                    <span key={index} className="font-medium uppercase">
+                      ,{item.name}
+                    </span>
+                  )
+                }
+                return (
+                  <span key={index} className="font-medium uppercase">
+                    {item.name}
+                  </span>
+                )
+              })}
+            </div>
+          </div>
+          <div className="pl-8 flex flex-col gap-y-5">
+            <div className="flex items-center ">
+              <input className="border-2 border-black border-opacity-55 focus:shadow-sm w-3/4 h-10 px-2" />
+              <div className="bg-[#b68059] relative h-10 w-1/6">
+                <CiSearch className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-white text-xl" />
+              </div>
+            </div>
+            <div>
+              <p>Bài viết mới nhất</p>
 
-      {draft && <LivePreviewListener />}
+              {pages?.docs?.map((item, index) => {
+                const data = item.content
+                const html = convertLexicalToHTML({ data })
+                return (
+                  <article className="flex gap-x-2 w-full py-2" key={item.id}>
+                    {typeof item.heroImage === 'object' && item.heroImage?.sizes?.small && (
+                      <Link href={item.slug || ''}>
+                        <Image
+                          width={50}
+                          height={50}
+                          alt=""
+                          src={`${process.env.NEXT_PUBLIC_SERVER_URL}${item.heroImage.url}`}
+                          className="h-full w-full object-cover"
+                        />
+                      </Link>
+                    )}
 
-      <RenderHero {...hero} />
-      <RenderBlocks blocks={layout} />
+                    <div className="w-40">
+                      <Link
+                        href={item.slug || ''}
+                        className="text-sm line-clamp-1 text-wrap font-[700]"
+                      >
+                        {item.title}
+                      </Link>
+                      <div className="mt-1 line-clamp-1 text-wrap text-xs">
+                        <div
+                          dangerouslySetInnerHTML={{ __html: html }}
+                          className="[&_p]:inline [&_p]:m-0 [&_p]:mr-1 line-clamp-1 text-wrap text-sm"
+                        />
+                      </div>
+                    </div>
+                  </article>
+                )
+              })}
+            </div>
+          </div>
+        </div>
+      </div>
     </article>
   )
 }
@@ -97,7 +210,7 @@ const queryPageBySlug = cache(async ({ slug }: { slug: string }) => {
   const payload = await getPayload({ config: configPromise })
 
   const result = await payload.find({
-    collection: 'pages',
+    collection: 'posts',
     draft,
     limit: 1,
     pagination: false,

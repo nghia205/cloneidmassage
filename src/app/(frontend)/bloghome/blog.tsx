@@ -10,9 +10,9 @@ export async function Blog() {
   const posts = await payload.find({
     collection: 'posts',
     sort: '-createdAt',
+    depth: 1,
     limit: 10,
   })
 
-  console.log('Posts:', posts)
-  return <BlogClient />
+  return <BlogClient post={posts} />
 }
