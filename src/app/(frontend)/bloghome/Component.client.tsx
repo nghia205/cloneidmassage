@@ -15,8 +15,8 @@ export const BlogClient = ({ post }: { post: PaginatedDocs<Post> }) => {
           <span className="text-2xl font-bold">Blog</span>
         </div>
 
-        <div className="flex py-5">
-          <div className="flex flex-col justify-center items-center w-3/4 pr-8 border-r-[1px] border-opacity-5 gap-y-2">
+        <div className="md:flex py-5">
+          <div className="flex flex-col justify-center items-center md:w-3/4 md:pr-8 md:border-r-[1px] border-opacity-5 gap-y-2">
             {post?.docs?.map((item) => {
               const data = item.content
               const html = convertLexicalToHTML({ data })
@@ -30,7 +30,7 @@ export const BlogClient = ({ post }: { post: PaginatedDocs<Post> }) => {
               return (
                 <div
                   key={item.id}
-                  className="flex flex-col justify-center items-center gap-y-3 mb-10"
+                  className="flex flex-col justify-center items-center gap-y-3 mb-10 w-full"
                 >
                   {typeof item.heroImage === 'object' && item.heroImage?.url && (
                     <div className="relative w-full group ">
@@ -39,7 +39,7 @@ export const BlogClient = ({ post }: { post: PaginatedDocs<Post> }) => {
                           src={`${process.env.NEXT_PUBLIC_SERVER_URL}${item.heroImage.url}`}
                           width={1000}
                           height={500}
-                          className="w-full cursor-pointer"
+                          className="w-full cursor-pointer object-contain md:h-[414px]"
                           alt=""
                           priority
                         />
@@ -69,11 +69,11 @@ export const BlogClient = ({ post }: { post: PaginatedDocs<Post> }) => {
             })}
           </div>
 
-          <div className="pl-8 flex flex-col gap-y-5">
+          <div className="md:pl-8 flex flex-col gap-y-5 md:w-1/4">
             <div className="flex items-center ">
               <input className="border-2 border-black border-opacity-55 focus:shadow-sm w-3/4 h-10 px-2" />
               <div className="bg-[#b68059] relative h-10 w-1/6">
-                <CiSearch className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-white text-xl" />
+                <CiSearch className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-white text-xl cursor-pointer" />
               </div>
             </div>
             <div>
@@ -82,7 +82,7 @@ export const BlogClient = ({ post }: { post: PaginatedDocs<Post> }) => {
                 const data = item.content
                 const html = convertLexicalToHTML({ data })
                 return (
-                  <article className="flex gap-x-2 w-full py-2" key={item.id}>
+                  <article className="flex py-2 gap-2 " key={item.id}>
                     {typeof item.heroImage === 'object' && item.heroImage?.sizes?.small && (
                       <Link href={item.slug || ''}>
                         <Image
@@ -90,15 +90,15 @@ export const BlogClient = ({ post }: { post: PaginatedDocs<Post> }) => {
                           height={50}
                           alt=""
                           src={`${process.env.NEXT_PUBLIC_SERVER_URL}${item.heroImage.url}`}
-                          className="h-full w-full object-cover"
+                          className="h-full w-full object-cover hover:opacity-65"
                         />
                       </Link>
                     )}
 
-                    <div className="w-40">
+                    <div className="w-full">
                       <Link
                         href={item.slug || ''}
-                        className="text-sm line-clamp-1 text-wrap font-[700]"
+                        className="text-sm line-clamp-1 text-wrap font-[700] hover:opacity-65"
                       >
                         {item.title}
                       </Link>

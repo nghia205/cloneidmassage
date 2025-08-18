@@ -95,70 +95,75 @@ export const HeaderClient: React.FC<HeaderClientProps> = () => {
 
   return (
     <>
-      <div className="w-full bg-[#D8BFA4]">
-        <header className="container relative z-20 " {...(theme ? { 'data-theme': theme } : {})}>
-          <div className="container sm:py-8 flex justify-between gap-x-10 py-1 px-0 sm:px-2">
-            <Link href="/" className="text-transparent flex items-center">
-              <Logo loading="eager" priority="high" className="fill-current" />
-            </Link>
-            <div className="flex items-center sm:gap-x-2 lg:gap-5 flex-1">
-              <div className="flex items-center justify-between border-2 rounded-xl border-white sm:w-2/6 lg:w-1/6 relative w-1/2 px-1 py-0">
-                <Popover className="relative w-full ">
-                  <PopoverButton className="focus:outline-none cursor-pointer h-full w-full flex justify-between items-center md:p-2 p-0 py-1 sm:py-2 ">
-                    <h1>Tất cả</h1>
-                    <IoIosArrowDown />
-                  </PopoverButton>
+      <header className=" relative z-20 bg-[#D8BFA4] " {...(theme ? { 'data-theme': theme } : {})}>
+        <div className="container flex flex-wrap items-center justify-between gap-4 bg-[#D8BFA4] py-3 md:gap-10">
+          <Link href="/" className="text-transparent flex items-center">
+            <Logo loading="eager" priority="high" className="fill-current" />
+          </Link>
+          <div className="flex items-center sm:gap-x-2 flex-1">
+            <div className="flex items-center h-9 justify-between border-[1px] rounded-full text-sm border-[#e2e8f0] relative ">
+              <Popover className="relative ">
+                <PopoverButton className="focus:outline-none cursor-pointer flex justify-between gap-x-10 p-1 items-center md:p-2 sm:py-2 text-sm ">
+                  <h1>Tất cả</h1>
+                  <IoIosArrowDown />
+                </PopoverButton>
 
-                  <PopoverPanel className="absolute top-full mt-2 h-[200px] w-[159px] bg-white text-black p-2 flex flex-col overflow-hidden rounded-xl shadow-lg gap-y-3">
-                    <Link href="/analytics">Huế</Link>
-                    <Link href="/engagement">Thành Phố Hồ Chí Minh</Link>
-                    <Link href="/security">Đà Nẵng</Link>
-                    <Link href="/integrations">Hà Nội</Link>
-                  </PopoverPanel>
-                </Popover>
-              </div>
-
-              <div className="items-center flex-1 justify-between relative hidden sm:flex ">
-                <input
-                  onKeyDown={handlerChangeInput}
-                  placeholder="Bạn cần tìm gì? "
-                  className="w-full rounded-xl border-2 border-white bg-[#D8BFA4] p-2"
-                />
-                <CiSearch className="absolute right-2 text-3xl" />
-              </div>
+                <PopoverPanel className="absolute top-full mt-2 h-[200px] w-[159px] bg-white text-black p-2 flex flex-col overflow-hidden rounded-xl shadow-lg gap-y-3">
+                  <Link href="/analytics">Huế</Link>
+                  <Link href="/engagement">Thành Phố Hồ Chí Minh</Link>
+                  <Link href="/security">Đà Nẵng</Link>
+                  <Link href="/integrations">Hà Nội</Link>
+                </PopoverPanel>
+              </Popover>
             </div>
 
-            <div className="flex items-center justify-between sm:gap-x-7 text-2xl gap-x-1 ">
+            <div className="items-center flex-1 justify-between relative hidden h-9 sm:flex ">
+              <input
+                onKeyDown={handlerChangeInput}
+                placeholder="Bạn cần tìm gì? "
+                className="file:text-foreground h-full placeholder:text-muted-foreground selection:bg-primary selection:text-primary-foreground dark:bg-input/30 border-input shadow-xs flex w-full min-w-0 border bg-transparent px-3 py-1 outline-none transition-[color,box-shadow] file:inline-flex file:h-7 file:border-0 file:bg-transparent file:text-sm file:font-medium disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 md:text-sm focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive rounded-full pr-8 text-sm"
+              />
+              <CiSearch className="absolute right-2 text-3xl" />
+            </div>
+          </div>
+
+          <div className="flex items-center gap-x-2 md:gap-x-0">
+            <button
+              className="cursor-pointer relative rounded bg-[#b68059] p-2 text-white shadow-[inset_8px_0_8px_-4px_#c39974] transition duration-300 hover:bg-[#a96e4d] sm:hidden"
+              onClick={handlerOpenSearch}
+              ref={searchRef}
+            >
+              <CiSearch />
+              {openSearch ? (
+                <div
+                  className="absolute top-full left-1/2 transform -translate-x-1/2 bg-white text-black  rounded-lg shadow-lg mt-1 w-48"
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  <input
+                    placeholder="Bạn cần tìm gì? "
+                    className="w-full border-2 border-black border-opacity-25  p-1 text-sm rounded-lg shadow-sm"
+                  />
+                </div>
+              ) : null}
+            </button>
+
+            <div className="p-0 shadow-none md:px-4 md:shadow-[inset_4px_0_2px_-4px_#c39974]">
               <button
-                className="cursor-pointer relative rounded bg-[#b68059] p-2 text-white shadow-[inset_8px_0_8px_-4px_#c39974] transition duration-300 hover:bg-[#a96e4d] sm:hidden"
-                onClick={handlerOpenSearch}
-                ref={searchRef}
-              >
-                <CiSearch />
-                {openSearch ? (
-                  <div
-                    className="absolute top-full left-1/2 transform -translate-x-1/2 bg-white text-black  rounded-lg shadow-lg mt-1 w-48"
-                    onClick={(e) => e.stopPropagation()}
-                  >
-                    <input
-                      placeholder="Bạn cần tìm gì? "
-                      className="w-full border-2 border-black border-opacity-25  p-1 text-sm rounded-lg shadow-sm"
-                    />
-                  </div>
-                ) : null}
-              </button>
-              <button
-                className="cursor-pointer rounded bg-[#b68059] p-2 text-white shadow-[inset_8px_0_8px_-4px_#c39974] transition duration-300 hover:bg-[#a96e4d] "
+                className="cursor-pointer rounded bg-[#b68059] p-2 text-white shadow-[inset_8px_0_8px_-4px_#c39974] transition duration-300 hover:bg-[#a96e4d] border-x-[1px] "
                 onClick={handlerOpenMenu}
               >
                 <IoMdMenu />
               </button>
+            </div>
+            <div className="p-0 shadow-none md:px-4 md:shadow-[inset_4px_0_2px_-4px_#c39974]">
               <Link href="/cart">
                 <button className="cursor-pointer rounded bg-[#b68059] p-2 text-white shadow-[inset_8px_0_8px_-4px_#c39974] transition duration-300 hover:bg-[#a96e4d] ">
                   <MdOutlineLocalGroceryStore />
                 </button>
               </Link>
+            </div>
 
+            <div className="p-0 shadow-none md:px-4 md:shadow-[inset_4px_0_2px_-4px_#c39974]">
               <button
                 className="cursor-pointer rounded bg-[#b68059] p-2 text-white shadow-[inset_8px_0_8px_-4px_#c39974] transition duration-300 hover:bg-[#a96e4d] "
                 onClick={handerOpenLogin}
@@ -167,8 +172,9 @@ export const HeaderClient: React.FC<HeaderClientProps> = () => {
               </button>
             </div>
           </div>
-        </header>
-      </div>
+        </div>
+      </header>
+
       {openMenu ? (
         <>
           <div className="fixed inset-0 z-20 bg-black bg-opacity-50" onClick={handlerOpenMenu}>

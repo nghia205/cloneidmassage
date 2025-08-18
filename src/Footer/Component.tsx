@@ -91,7 +91,7 @@ export async function Footer() {
           src="https://www.facebook.com/plugins/page.php?href=https%3A%2F%2Fwww.facebook.com%2Fprofile.php%3Fid%3D61567136855725%26ref%3Dembed_page&amp;tabs=timeline&amp;width=340&amp;height=500&amp;small_header=false&amp;adapt_container_width=true&amp;hide_cover=false&amp;show_facepile=true&amp;appId"
           width="340"
           height="340"
-          className="overflow-hidden border-none"
+          className="overflow-hidden border-none w-full"
           allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"
           title="Facebook IDMassage Page"
         ></iframe>

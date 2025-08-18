@@ -26,6 +26,8 @@ import {
   PreviewField,
 } from '@payloadcms/plugin-seo/fields'
 import { slugField } from '@/fields/slug'
+import path from 'path'
+import fs from 'fs'
 
 export const Posts: CollectionConfig<'posts'> = {
   slug: 'posts',
@@ -222,7 +224,26 @@ export const Posts: CollectionConfig<'posts'> = {
   hooks: {
     afterChange: [revalidatePost],
     afterRead: [populateAuthors],
-    afterDelete: [revalidateDelete],
+    afterDelete: [
+      revalidateDelete,
+      async ({ doc }) => {
+        // xóa heroImage
+        if (doc.heroImage?.url) {
+          const filePath = path.join(process.cwd(), 'public', doc.heroImage.url)
+          if (fs.existsSync(filePath)) fs.unlinkSync(filePath)
+        }
+
+        // xóa gallery nếu có
+        if (doc.gallery) {
+          for (const item of doc.gallery) {
+            if (item.image?.url) {
+              const imgPath = path.join(process.cwd(), 'public', item.image.url)
+              if (fs.existsSync(imgPath)) fs.unlinkSync(imgPath)
+            }
+          }
+        }
+      },
+    ],
   },
   versions: {
     drafts: {

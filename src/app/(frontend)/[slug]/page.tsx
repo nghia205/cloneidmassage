@@ -87,8 +87,8 @@ export default async function Page({ params: paramsPromise }: Args) {
           <MdKeyboardArrowRight className="text-xl opacity-25" />
           <span className="text-wrap font-medium text-gray-900">{page.title}</span>
         </div>
-        <div className="flex py-5">
-          <div className="flex flex-col justify-center items-center w-3/4 pr-8 border-r-[1px] border-opacity-5 gap-y-2">
+        <div className="md:flex py-5">
+          <div className="flex flex-col justify-center items-center w-full md:w-3/4 md:pr-8 md:border-r-[1px] border-opacity-5 gap-y-2">
             <div className="text-center text-2xl font-semibold">{page.title}</div>
             <p className="mx-auto my-3 h-[3px] w-8 bg-[#ebebeb]"></p>
             <span className="mx-auto text-sm text-gray-500 flex gap-x-2">
@@ -119,7 +119,7 @@ export default async function Page({ params: paramsPromise }: Args) {
             <h1>{page.title}</h1>
             <div className="my-2 h-[2px] w-8 bg-[#ebebeb]"></div>
             <div dangerouslySetInnerHTML={{ __html: html }} className="text-sm" />
-            <div className="flex items-center gap-x-2 w-full justify-start mt-20 ">
+            <div className="flex items-center gap-x-2 w-full justify-start mt-20 mb-10 md:mb-10">
               <Image
                 src="/avatar-default.webp"
                 width={70}
@@ -143,9 +143,9 @@ export default async function Page({ params: paramsPromise }: Args) {
               })}
             </div>
           </div>
-          <div className="pl-8 flex flex-col gap-y-5">
+          <div className="md:pl-8 flex flex-col gap-y-5 w-full md:w-1/4">
             <div className="flex items-center ">
-              <input className="border-2 border-black border-opacity-55 focus:shadow-sm w-3/4 h-10 px-2" />
+              <input className="border-2 border-black border-opacity-55 focus:shadow-sm w-full md:w-3/4 h-10 px-2" />
               <div className="bg-[#b68059] relative h-10 w-1/6">
                 <CiSearch className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-white text-xl" />
               </div>
@@ -158,22 +158,22 @@ export default async function Page({ params: paramsPromise }: Args) {
                 const html = convertLexicalToHTML({ data })
                 return (
                   <article className="flex gap-x-2 w-full py-2" key={item.id}>
-                    {typeof item.heroImage === 'object' && item.heroImage?.sizes?.small && (
-                      <Link href={item.slug || ''}>
+                    {typeof item.heroImage === 'object' && item.heroImage?.sizes?.medium && (
+                      <Link href={item.slug || ''} className="w-10 h-10 shrink-0">
                         <Image
-                          width={50}
-                          height={50}
-                          alt=""
+                          width={40}
+                          height={40}
+                          alt={item.title || ''}
                           src={`${process.env.NEXT_PUBLIC_SERVER_URL}${item.heroImage.url}`}
-                          className="h-full w-full object-cover"
+                          className="w-full h-full object-cover rounded hover:opacity-65"
                         />
                       </Link>
                     )}
 
-                    <div className="w-40">
+                    <div className="flex-1">
                       <Link
                         href={item.slug || ''}
-                        className="text-sm line-clamp-1 text-wrap font-[700]"
+                        className="text-sm line-clamp-1 text-wrap font-[700] hover:opacity-65"
                       >
                         {item.title}
                       </Link>
